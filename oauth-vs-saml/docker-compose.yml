@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  # Identity Provider único para los dos POCs (OIDC y SAML)
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: kc-idp
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: "true"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - identity-net
+
+  # MySQL compartido: una base por POC (sesiones)
+  mysql:
+    image: mysql:8.0
+    container_name: identity-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: oauth_poc
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - identity-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  identity-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
