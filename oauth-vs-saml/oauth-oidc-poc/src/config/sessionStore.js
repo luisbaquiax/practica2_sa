@@ -1,26 +1,16 @@
-//config/sessionStore.js
+const session = require("express-session");
+const MySQLStoreFactory = require("express-mysql-session");
+const pool = require("./db");
 
-const MySQLStore = require("express-mysql-session")(require("express-session"));
-require("dotenv").config();
+const MySQLStore = MySQLStoreFactory(session);
 
-const sessionStore = new MySQLStore({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  createDatabaseTable: true,
-});
+const sessionStore = new MySQLStore({}, pool);
 
-/*
 sessionStore
   .onReady()
-  .then(() => {
-    console.log("MySQLStore listo, tabla sessions verificada/creada.");
-  })
+  .then(() => console.log("[sessionStore] MySQLStore listo"))
   .catch((error) => {
-    console.error("Error creando MySQLStore:", error);
+    console.error("[sessionStore] Error inicializando MySQLStore:", error);
   });
-*/
 
 module.exports = sessionStore;

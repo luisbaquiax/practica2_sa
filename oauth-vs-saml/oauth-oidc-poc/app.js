@@ -1,41 +1,55 @@
-const express = require("express");
-const session = require("express-session");
-const cors = require("cors");
 require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const session = require("express-session");
 
 const sessionStore = require("./src/config/sessionStore");
+const authRoutes = require("./src/routes/auth");
+const { initClient } = require("./src/config/oidcClient");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:4300",
-    credentials: true,
-  })
-);
-
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 app.use(
   session({
-    store: sessionStore,
+    key: "oidc_poc_session",
     secret: process.env.SESSION_SECRET,
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true,
-      secure: false, // true si se usa HTTPS
       maxAge: 1000 * 60 * 60, // 1 hora
-      sameSite: "lax",
+      httpOnly: true,
+      secure: false,
     },
   })
 );
 
+app.use("/auth", authRoutes);
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Servidor session-based corriendo en puerto ${PORT}`);
+app.get("/", (req, res) => {
+  res.json({
+    ok: true,
+    autenticado: Boolean(req.session.tokens),
+    rutas: ["/auth/login", "/auth/callback", "/auth/profile", "/auth/logout"],
+  });
 });
 
-const authRoutes = require("./src/routes/auth");
-app.use("/api/auth", authRoutes);
+const PORT = process.env.PORT || 3000;
+
+// El discovery OIDC contra Keycloak es asíncrono (llamada HTTP a
+initClient()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`OAuth2 + OIDC POC corriendo en http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("No se pudo inicializar el cliente OIDC:", err.message);
+    console.error(
+      "¿Está Keycloak levantado? Revisa docker compose y KC_ISSUER en tu .env"
+    );
+    process.exit(1);
+  });

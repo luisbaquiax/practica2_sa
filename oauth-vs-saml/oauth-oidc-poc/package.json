@@ -1,8 +1,8 @@
 {
   "name": "oauth-oidc-poc",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "POC OAuth 2.0 + OIDC contra Keycloak - delegación de identidad",
+  "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js"
@@ -18,7 +18,8 @@
     "express": "^5.2.1",
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.19.0",
-    "mysql2": "^3.23.2"
+    "mysql2": "^3.23.2",
+    "openid-client": "^5.7.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
