@@ -48,8 +48,6 @@ initClient()
   })
   .catch((err) => {
     console.error("No se pudo inicializar el cliente OIDC:", err.message);
-    console.error(
-      "¿Está Keycloak levantado? Revisa docker compose y KC_ISSUER en tu .env"
-    );
+    console.error("Keycloak fuera de servicio o mal configuraod");
     process.exit(1);
   });

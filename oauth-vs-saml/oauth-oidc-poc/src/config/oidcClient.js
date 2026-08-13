@@ -34,7 +34,7 @@ async function initClient() {
 function getClient() {
   if (!client) {
     throw new Error(
-      "El cliente OIDC no se ha inicializado. Llama a initClient() en el arranque de la app (app.js) antes de usar las rutas."
+      "El cliente OIDC no se ha inicializado."
     );
   }
   return client;

@@ -6,10 +6,7 @@ const requireAuth = require("../middleware/requireAuth");
 const router = express.Router();
 
 /**
- * Decodifica un JWT SIN verificar la firma, solo para mostrar
- * header/payload en pantalla durante el video. NUNCA usar esto
- * para validar un token en código real - eso lo hace la librería
- * internamente contra las llaves públicas (JWKS) del issuer.
+ * Decodifica un JWT SIN verificar la firma, para fines de demostración.
  */
 function decodeJwtForDisplay(token) {
   if (!token) return null;
