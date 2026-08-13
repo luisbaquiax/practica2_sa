@@ -3,7 +3,7 @@ OAuth vs SAML
 
 * [Documento-esayo](oauth_vs_saml.pdf)
 * [Presentación](https://docs.google.com/presentation/d/1krT14v0VQyoHcc8YhN3WLfpDh-Adh3j0HzJ6LAzgj0o/edit?usp=sharing)
-* [Video](VIDEO)
+* [Video](https://www.awesomescreenshot.com/video/55508218?key=9a4924234918ac45aaccaffa3db8f5bf)
 
 # Cómo levantar el proyecto
 
